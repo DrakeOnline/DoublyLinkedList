@@ -21,9 +21,20 @@ class DoublyLinkedList:
 
             # Add to printout string depending on if it's the first
             if printout == "":
-                printout += f"{node.value}"
+                printout += f"{node.value} "
             else:
-                printout += f" -> {node.value}"
+                printout += f" <-> {node.value} "
+
+            # Print possible previous value
+            if node.prev:
+                printout += f"| prev value: {node.prev.value} "
+            else:
+                printout += f"| prev value: None "
+            # Print possible next value
+            if node.next:
+                printout += f"| next value: {node.next.value}"
+            else:
+                printout += f"| next value: None "
 
             # Change node to next in line
             node = node.next
@@ -35,6 +46,8 @@ class DoublyLinkedList:
         newHead = Node(value)
         # Assign new node's next to head
         newHead.next = self.head
+        # Add prev
+        self.head.prev = newHead
         # Set new node as head
         self.head = newHead
 
@@ -42,25 +55,15 @@ class DoublyLinkedList:
         tail = self.get_tail()
         # Set tail's next to new node
         tail.next = Node(value)
+        tail.next.prev = tail
 
     def pop_left(self):
         self.head = self.head.next
+        self.head.prev = None
 
     def pop_right(self):
-        # Get length of linked list
-        count = 1
-        node = self.head
-        while node.next != None:
-            node = node.next
-            count += 1
-
-        # Get second-to-last node
-        node = self.head
-        for x in range(0, count - 2):
-            node = node.next
-
         # Nullify node's next
-        node.next = None
+        self.get_second_from_tail().next = None
 
     def contains(self, value):
         contains = False
@@ -86,6 +89,20 @@ class DoublyLinkedList:
 
         return node
 
+    def get_second_from_tail(self):
+        # Get length of linked list
+        count = 1
+        node = self.head
+        while node.next != None:
+            node = node.next
+            count += 1
+
+        # Get second-to-last node
+        node = self.head
+        for x in range(0, count - 2):
+            node = node.next
+        return node
+
 
 class Node:
     # Members
@@ -94,8 +111,8 @@ class Node:
     prev  = None
 
     # Methods
-    def __init__(self, _nodeValue):
-        self.value = _nodeValue
+    def __init__(self, nodeValue):
+        self.value = nodeValue
         self.next  = None
 
     def __repr__(self):
